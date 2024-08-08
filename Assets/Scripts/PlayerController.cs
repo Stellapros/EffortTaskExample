@@ -99,6 +99,10 @@ public class PlayerController : MonoBehaviour
     public void ResetPosition()
     {
         transform.position = new Vector3(0, 0, 0);
+        
+        //spawn agent
+        
+
     }
 
 }

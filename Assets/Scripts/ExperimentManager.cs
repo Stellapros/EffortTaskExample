@@ -13,9 +13,13 @@ class Trial
     /// </summary>
     /// varEV is the variable that holds the effort level (1,2,3) for each trial
     public float varEV = -99;
-    public Trial(float varEV_)
+    public Vector3 varPosPlayer = new Vector3(0, 0, 0);
+
+    public Trial(float varEV_, Vector3 varPosPlayer_)
     {
-        varEV = varEV_;
+        varEV = varEV_; 
+        varPosPlayer = varPosPlayer_;
+        //varPosReward = varPosReward_'
         // Add here the variables that define each trial 
     }
 }
@@ -54,6 +58,13 @@ public class ExperimentManager : MonoBehaviour
     public int totalKeyPresses;
     public int pressesRequired;
     public GameObject UICanvas;
+    private float trialDuration = 5f;
+    //List<float> lowEffort, mediumEffort, highEffort;
+    //List<(float, float, float)>listLevels=new List<(float, float, float)>();
+    private float lowEffort = 0.3f;
+    private float mediumEffort = 0.5f;
+    private float highEffort = 0.9f;
+
 
     List<Trial> lstEVs;
 
@@ -65,10 +76,12 @@ public class ExperimentManager : MonoBehaviour
 
     {
        
+        
+        
         //TRIAL GENERATOR ///////////////////////////////////////////
         //TO DO: Create a rountine that creates a trial array that counterbalances effort level, character position, target position and  reward
         //At the moment it creates a list of trials with shuffled effort values
-        lstEVs = new List<Trial>();
+        lstEVs = new List<Trial>(); //lstEVs = list of trials
         //The nested for loop bellow ensures that the trial list has equal numbers of each effort value type
         //TO DO: Create a new routine for trial counterbalancing
         for (int i2 = 0; i2 < 4; i2++)
@@ -77,11 +90,12 @@ public class ExperimentManager : MonoBehaviour
             {
                 //lstEVs is the list of trial objects
                 //The new trial generation routine has to add new trial objects to this list
-                lstEVs.Add(new Trial(ii+1));
+                lstEVs.Add(new Trial(ii+1, new Vector3(0,5,0)));
             }
         }
         //TO DO: Rethink shuffle for blocks list 
         lstEVs.Shuffle();
+        
 
         ////// Print the trial list 
         //int totalTrials = lstEVs.Count;
@@ -109,15 +123,15 @@ public class ExperimentManager : MonoBehaviour
         //Compute the steps required for movement according to the effort value assigned to the bext trial
         if (effortLevel == 1)
         {
-            pressesRequired = (int)(0.30 * totalKeyPresses);
+            pressesRequired = (int)(lowEffort * totalKeyPresses);
         }
         else if (effortLevel == 2)
         {
-            pressesRequired = (int)(0.50 * totalKeyPresses);
+            pressesRequired = (int)(mediumEffort * totalKeyPresses);
         }
         else if (effortLevel == 3)
         {
-            pressesRequired = (int)(0.90 * totalKeyPresses);
+            pressesRequired = (int)(highEffort * totalKeyPresses);
         }
         Debug.Log("Effort level of next : " + effortLevel);
         Debug.Log("Presses Required: " + pressesRequired);
@@ -135,7 +149,7 @@ public class ExperimentManager : MonoBehaviour
         if (trialRunning) {
             /// At the moment the trial ends with a time out
             /// TO DO: End trial either when the player collides with the target object or due to time-out
-            if (Time.time - startTime > 5)
+            if (Time.time - startTime > trialDuration)
             {
                 Debug.Log("Time Out Trial");
                 //At the end of each trial:
@@ -153,18 +167,21 @@ public class ExperimentManager : MonoBehaviour
 
 
                 float next_effortLevel = lstEVs[trialNum].varEV;
+
+                // define effort levels
+                //listLevels.Add((0.3f, 0.5f, 0.9f));
                 //Compute the steps required for movement according to the effort value assigned to the bext trial
                 if (next_effortLevel == 1)
                 {
-                    pressesRequired = (int)(0.30 * totalKeyPresses);
+                    pressesRequired = (int)(lowEffort * totalKeyPresses);
                 }
                 else if (next_effortLevel == 2)
                 {
-                    pressesRequired = (int)(0.50 * totalKeyPresses);
+                    pressesRequired = (int)(mediumEffort * totalKeyPresses);
                 }
                 else if (next_effortLevel == 3)
                 {
-                    pressesRequired = (int)(0.90 * totalKeyPresses);
+                    pressesRequired = (int)(highEffort * totalKeyPresses);
                 }
                 Debug.Log("Next Effort level: " + next_effortLevel);
                 Debug.Log("Presses Required: " + pressesRequired);
@@ -215,15 +232,15 @@ public class ExperimentManager : MonoBehaviour
         //Compute the steps required for movement according to the effort value assigned to the bext trial
         if (next_effortLevel == 1)
         {
-            pressesRequired = (int)(0.30 * totalKeyPresses);
+            pressesRequired = (int)(lowEffort * totalKeyPresses);
         }
         else if (next_effortLevel == 2)
         {
-            pressesRequired = (int)(0.50 * totalKeyPresses);
+            pressesRequired = (int)(mediumEffort * totalKeyPresses);
         }
         else if (next_effortLevel == 3)
         {
-            pressesRequired = (int)(0.90 * totalKeyPresses);
+            pressesRequired = (int)(highEffort * totalKeyPresses);
         }
         Debug.Log("Next Effort level: " + next_effortLevel);
         Debug.Log("Presses Required: " + pressesRequired);
